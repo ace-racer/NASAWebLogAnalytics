@@ -15,6 +15,7 @@ with open(file_location, "r") as fr:
     for line in fr:
         try:
             print('Processing: ' + line)
+            line = line.strip()
             line_count += 1
 
             line_components = line.split(" ")
@@ -35,6 +36,9 @@ with open(file_location, "r") as fr:
                     if extension not in ACCEPTED_EXTENSIONS:
                         other_object_count += 1
                         continue
+            
+            # remove the opening square bracket at the start
+            date_time = date_time[1:]
             
             fa.writelines("{0},{1},{2},{3}\n".format(host_name, date_time, item_requested, num_bytes))
             success_count += 1
