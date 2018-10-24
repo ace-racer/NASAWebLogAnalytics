@@ -1,7 +1,7 @@
-file_location = "nasa_data/Folder_SLFiles/access_log_Jul95"
+file_location = "nasa_data/Folder_SLFiles/access_log_Aug95"
 ACCEPTED_EXTENSIONS = ["html", "htm"]
 
-output_file_location = "nasa_data/processed_access_log_Jul95.csv"
+output_file_location = "nasa_data/processed_access_log_Aug95.csv"
 
 # append file handler
 fa = open(output_file_location, "a", encoding='utf8')
