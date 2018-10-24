@@ -4,9 +4,9 @@ ACCEPTED_EXTENSIONS = ["html", "htm"]
 output_file_location = "nasa_data/processed_access_log_Jul95.csv"
 
 # append file handler
-fa = open(output_file_location, "a")
+fa = open(output_file_location, "a", encoding='utf8')
 
-with open(file_location, "r") as fr:
+with open(file_location, "r", encoding='utf8', errors='ignore') as fr:
     error_count = 0
     success_count = 0
     line_count = 0
@@ -39,8 +39,11 @@ with open(file_location, "r") as fr:
             
             # remove the opening square bracket at the start
             date_time = date_time[1:]
+            first_position_colon = date_time.index(":")
+            date = date_time[:first_position_colon]
+            time = date_time[first_position_colon + 1:]
             
-            fa.writelines("{0},{1},{2},{3}\n".format(host_name, date_time, item_requested, num_bytes))
+            fa.writelines("{0},{1},{2},{3},{4}\n".format(host_name, date, time, item_requested, num_bytes))
             success_count += 1
 
         except Exception as ex:
