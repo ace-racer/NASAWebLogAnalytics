@@ -1,0 +1,23 @@
+---
+title: "NASA web logs association analysis"
+output: html_notebook
+---
+
+
+```{r}
+setwd("H:\\EB5205BarryWebAnalyticsCA\\nasa_source_code")
+library("arules")
+nasa_july_df <- read.csv(file="nasa_data/sessionized_data/sessionize_date_july.csv", header=TRUE, sep=",")
+head(nasa_july_df)
+```
+
+```{r}
+nasa_july_df <- nasa_july_df[c("session_id", "webpage")]
+head(nasa_july_df)
+```
+
+```{r}
+rules <- apriori(nasa_july_df, parameter = list(supp=0.1, conf=0.1, minlen=2))
+summary(rules)
+inspect(rules)
+```
