@@ -17,7 +17,30 @@ head(nasa_july_df)
 ```
 
 ```{r}
-rules <- apriori(nasa_july_df, parameter = list(supp=0.1, conf=0.1, minlen=2))
+nasa_july_df$webpage <- as.factor(nasa_july_df$webpage)
+nasa_july_df$session_id <- as.factor(nasa_july_df$session_id)
+# nasa <- as(nasa_july_df, "transactions")
+head(nasa_july_df)
+```
+```{r}
+rules <- apriori(nasa_july_df, parameter = list(supp=0.4, conf=0.4, minlen=2))
 summary(rules)
 inspect(rules)
 ```
+```{r}
+# a useful plot of training data
+nasa_transactions = as(nasa_july_df, "transactions")
+itemFrequencyPlot(nasa_transactions,topN=20,type="absolute")
+```
+```{r}
+#read the test data
+setwd("H:\\EB5205BarryWebAnalyticsCA\\nasa_source_code")
+nasa_test_df = read.csv(file="nasa_data/sessionized_data/sessionize_date_aug.csv", header=TRUE, sep=",");
+head(nasa_test_df)
+```
+
+
+
+
+
+
