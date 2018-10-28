@@ -109,3 +109,19 @@ precision = correctpreds*100/totalpreds
 cat("precision=", precision, "corr=",correctpreds,"total=",totalpreds)
 
 ```
+
+## precision= 11.11818 corr= 137804 total= 1239448
+
+```{r}
+library(arulesViz)
+plot(rules)
+
+
+```
+
+```{r}
+plot(rules, method="graph")
+plot(rules, method="graph",nodeCol=grey.colors(10),edgeCol=grey(.7),alpha=1)
+plot(rules, method="matrix")
+plot(rules, method="paracoord", control=list(reorder=TRUE))
+```
