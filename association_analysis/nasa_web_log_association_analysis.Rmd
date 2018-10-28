@@ -12,7 +12,7 @@ nasa_transactions = read.transactions(file="nasa_data/sessionized_data/sessioniz
 ```{r}
 rules <- apriori(nasa_transactions, parameter = list(supp=0.01, conf=0.01, minlen=2))
 summary(rules)
-inspect(rules)
+#inspect(rules)
 ```
 ```{r}
 # a useful plot of training data
@@ -58,6 +58,19 @@ top.lift <- sort(rules, decreasing = TRUE, na.last = NA, by = "lift")
 inspect(head(top.lift, 20)) 
 ```
 ```{r}
+
+# extract unique predictions for each test session - predictions
+userpreds = as.data.frame(aggregate(preds ~ session_id, data = nasa_aug_file, paste, collapse=","))
+userpreds$preds = apply(userpreds,1,function(X) uniqueitems(X["preds"]))
+
+# extract unique items visited most for each test session - actual
+baskets = as.data.frame(aggregate(webpage ~ session_id, data = nasa_aug_file, paste, collapse=","))
+baskets$webpage = apply(baskets,1,function(X) uniqueitems(X["webpage"]))
+
+baskets
+
+```
+```{r}
 #remove duplicate items from a basket (itemstrg)
 uniqueitems <- function(itemstrg) {
   unique(as.list(strsplit(gsub(" ","",itemstrg),","))[[1]])
@@ -66,8 +79,9 @@ uniqueitems <- function(itemstrg) {
 # count how many predictions are in the basket of items already seen by that user 
 # Caution : refers to "baskets" as a global
 checkpreds <- function(preds, baskID) {
+  # print(baskID)
   plist = preds[[1]]
-  blist = baskets[baskets$basketID == baskID,"items"][[1]]
+  blist = baskets[baskets$session_id == baskID,"webpage"][[1]]
   cnt = 0 
   for (p in plist) {
     if (p %in% blist) cnt = cnt+1
@@ -82,16 +96,10 @@ countpreds <- function(predlist) {
   else len
 }
 
-# extract unique predictions for each session
-userpreds = as.data.frame(aggregate(preds ~ session_id, data = nasa_aug_file, paste, collapse=","))
-userpreds$preds = apply(userpreds,1,function(X) uniqueitems(X["preds"]))
-
-# extract unique items visited most for each session
-baskets = as.data.frame(aggregate(webpage ~ session_id, data = nasa_aug_file, paste, collapse=","))
-baskets$items = apply(baskets,1,function(X) uniqueitems(X["webpage"]))
-
+```
+```{r}
 #count how many unique predictions made are correct, i.e. have previously been bought (or rated highly) by the user
-correctpreds = sum(apply(userpreds,1,function(X) checkpreds(X["webpage"],X["session_id"])))
+correctpreds = sum(apply(userpreds,1,function(X) checkpreds(X["preds"],X["session_id"])))
 
 # count total number of unique predictions made
 totalpreds = sum(apply(userpreds,1,function(X) countpreds(X["preds"][[1]]))) 
@@ -99,4 +107,5 @@ totalpreds = sum(apply(userpreds,1,function(X) countpreds(X["preds"][[1]])))
 precision = correctpreds*100/totalpreds
 
 cat("precision=", precision, "corr=",correctpreds,"total=",totalpreds)
+
 ```
