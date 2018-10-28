@@ -5,7 +5,7 @@ output: html_notebook
 
 
 ```{r}
-setwd("H:\\EB5205BarryWebAnalyticsCA\\nasa_source_code")
+setwd("/Users/pierlim/PycharmProjects/NASAWebLogAnalytics/association_analysis")
 library("arules")
 nasa_july_df <- read.csv(file="nasa_data/sessionized_data/sessionize_date_july.csv", header=TRUE, sep=",")
 head(nasa_july_df)
@@ -34,7 +34,6 @@ itemFrequencyPlot(nasa_transactions,topN=20,type="absolute")
 ```
 ```{r}
 #read the test data
-setwd("H:\\EB5205BarryWebAnalyticsCA\\nasa_source_code")
 nasa_test_df = read.csv(file="nasa_data/sessionized_data/sessionize_date_aug.csv", header=TRUE, sep=",");
 head(nasa_test_df)
 ```

@@ -1,0 +1,106 @@
+---
+title: "NASA web logs association analysis - host only"
+output: html_notebook
+---
+```{r}
+
+#######################################################################
+# the supporting functions
+#######################################################################
+
+#remove duplicate items from a basket (itemstrg)
+uniqueitems <- function(itemstrg) {
+  unique(as.list(strsplit(gsub(" ","",itemstrg),","))[[1]])
+}
+
+# execute ruleset using item as rule antecedent (handles single item antecedents only)
+makepreds <- function(item, rulesDF) {
+  antecedent = paste("{",item,"} =>",sep="") 
+  firingrules = rulesDF[grep(antecedent, rulesDF$rules,fixed=TRUE),1]
+  gsub(" ","",toString(sub("\\}","",sub(".*=> \\{","",firingrules))))
+}
+
+# count how many predictions are in the basket of items already seen by that user 
+# Caution : refers to "baskets" as a global
+checkpreds <- function(preds, baskID) {
+  plist = preds[[1]]
+  blist = baskets[baskets$session_id == baskID,"webpage"][[1]]
+  cnt = 0 
+  for (p in plist) {
+    if (p %in% blist) cnt = cnt+1
+  }
+  cnt
+}
+
+# count all predictions made
+countpreds <- function(predlist) {
+  len = length(predlist)
+  if (len > 0 && (predlist[[1]] == "")) 0 # avoid counting an empty list
+  else len
+}
+
+```
+
+
+```{r}
+setwd("/Users/pierlim/PycharmProjects/NASAWebLogAnalytics/association_analysis")
+library("arules")
+nasa_transactions = read.transactions(file="nasa_data/sessionized_data/sessionize_hostonly_july.csv",rm.duplicates=TRUE, format="single", sep=",", cols=c("session_id","webpage"));
+print(nasa_transactions)
+#nasa_july_df <- read.csv(file="nasa_data/sessionized_data/sessionize_date_july.csv", header=TRUE, sep=",")
+#head(nasa_july_df)
+```
+```{r}
+rules <- apriori(nasa_transactions, parameter = list(supp=0.01, conf=0.1, minlen=2))
+summary(rules)
+inspect(rules)
+```
+```{r}
+#read the test data
+testegs = read.csv(file="nasa_data/sessionized_data/sessionize_hostonly_aug.csv");
+head(testegs)
+```
+```{r}
+#execute rules against test data
+rulesDF = as(rules,"data.frame")
+testegs$preds = apply(testegs,1,function(X) makepreds(X["webpage"], rulesDF))
+```
+
+
+```{r}
+
+# extract unique predictions for each test user
+userpreds = as.data.frame(aggregate(preds ~ session_id, data = testegs, paste, collapse=","))
+userpreds$preds = apply(userpreds,1,function(X) uniqueitems(X["preds"]))
+
+```
+
+
+```{r}
+# extract unique items bought (or rated highly) for each test user
+baskets = as.data.frame(aggregate(webpage ~ session_id, data = testegs, paste, collapse=","))
+baskets$webpage = apply(baskets,1,function(X) uniqueitems(X["webpage"]))
+```
+```{r}
+#count how many unique predictions made are correct, i.e. have previously been bought (or rated highly) by the user
+correctpreds = sum(apply(userpreds,1,function(X) checkpreds(X["preds"],X["session_id"])))
+# count total number of unique predictions made
+totalpreds = sum(apply(userpreds,1,function(X) countpreds(X["preds"][[1]]))) 
+```
+```{r}
+
+precision = correctpreds*100/totalpreds
+
+# Recall calculation
+uniquepages <- testegs[c('session_id', 'webpage')]
+actual_pages_visited <- table(uniquepages$session_id)
+recall <- correctpreds*100/sum(actual_pages_visited) 
+
+cat("precision=", precision, "corr=",correctpreds, "recall=",recall, "total=",totalpreds)
+```
+```{r}
+
+
+```
+
+```{r}
