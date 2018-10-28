@@ -114,8 +114,8 @@ cat("precision=", precision, "corr=",correctpreds,"total=",totalpreds)
 
 ```{r}
 library(arulesViz)
-plot(rules)
-
+#plot(rules)
+plotly_arules(rules)
 
 ```
 
@@ -133,4 +133,10 @@ recall = correctpreds * 100 / total_relevant_instances
 recall
 ```
 
-## Recall comes to 33.11 %
+## Recall comes to 33.11 % 
+
+```{r}
+library(arulesViz)
+plot(top.lift, method="graph",nodeCol=grey.colors(10),edgeCol=grey(.7),alpha=1)
+
+```
