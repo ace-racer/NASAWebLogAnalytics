@@ -125,3 +125,12 @@ plot(rules, method="graph",nodeCol=grey.colors(10),edgeCol=grey(.7),alpha=1)
 plot(rules, method="matrix")
 plot(rules, method="paracoord", control=list(reorder=TRUE))
 ```
+
+
+```{r}
+total_relevant_instances = nrow(nasa_aug_file)
+recall = correctpreds * 100 / total_relevant_instances
+recall
+```
+
+## Recall comes to 33.11 %
