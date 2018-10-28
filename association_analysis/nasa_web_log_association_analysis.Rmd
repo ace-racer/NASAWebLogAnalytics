@@ -52,6 +52,51 @@ nasa_aug_file$preds = apply(nasa_aug_file,1,function(X) makepreds(X["webpage"], 
 ```{r}
 head(nasa_aug_file)
 ```
+```{r}
+# which are the top rules by lift
+top.lift <- sort(rules, decreasing = TRUE, na.last = NA, by = "lift")
+inspect(head(top.lift, 20)) 
+```
+```{r}
+#remove duplicate items from a basket (itemstrg)
+uniqueitems <- function(itemstrg) {
+  unique(as.list(strsplit(gsub(" ","",itemstrg),","))[[1]])
+}
 
+# count how many predictions are in the basket of items already seen by that user 
+# Caution : refers to "baskets" as a global
+checkpreds <- function(preds, baskID) {
+  plist = preds[[1]]
+  blist = baskets[baskets$basketID == baskID,"items"][[1]]
+  cnt = 0 
+  for (p in plist) {
+    if (p %in% blist) cnt = cnt+1
+  }
+  cnt
+}
 
+# count all predictions made
+countpreds <- function(predlist) {
+  len = length(predlist)
+  if (len > 0 && (predlist[[1]] == "")) 0 # avoid counting an empty list
+  else len
+}
 
+# extract unique predictions for each session
+userpreds = as.data.frame(aggregate(preds ~ session_id, data = nasa_aug_file, paste, collapse=","))
+userpreds$preds = apply(userpreds,1,function(X) uniqueitems(X["preds"]))
+
+# extract unique items visited most for each session
+baskets = as.data.frame(aggregate(webpage ~ session_id, data = nasa_aug_file, paste, collapse=","))
+baskets$items = apply(baskets,1,function(X) uniqueitems(X["webpage"]))
+
+#count how many unique predictions made are correct, i.e. have previously been bought (or rated highly) by the user
+correctpreds = sum(apply(userpreds,1,function(X) checkpreds(X["webpage"],X["session_id"])))
+
+# count total number of unique predictions made
+totalpreds = sum(apply(userpreds,1,function(X) countpreds(X["preds"][[1]]))) 
+
+precision = correctpreds*100/totalpreds
+
+cat("precision=", precision, "corr=",correctpreds,"total=",totalpreds)
+```
