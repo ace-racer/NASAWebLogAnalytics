@@ -32,14 +32,26 @@ References: 1. https://en.wikipedia.org/wiki/Apollo_13_(film)
 ```{r}
 #read the test data
 setwd("H:\\EB5205BarryWebAnalyticsCA\\nasa_source_code")
-nasa_test_df = read.csv(file="nasa_data/sessionized_data/sessionize_date_aug.csv", header=TRUE, sep=",");
-head(nasa_test_df)
+
+nasa_aug_file = read.csv(file="nasa_data/sessionized_data/sessionize_date_aug.csv")
+nasa_aug_file <- nasa_aug_file[c("session_id", "webpage")]
+head(nasa_aug_file)
 ```
 ```{r}
-print(inspect(rules))
+# execute ruleset using item as rule antecedent (handles single item antecedents only)
+makepreds <- function(item, rulesDF) {
+  antecedent = paste("{",item,"} =>",sep="") 
+  firingrules = rulesDF[grep(antecedent, rulesDF$rules,fixed=TRUE),1]
+  gsub(" ","",toString(sub("\\}","",sub(".*=> \\{","",firingrules))))
+}
+
+rulesDF = as(rules,"data.frame")
+nasa_aug_file$preds = apply(nasa_aug_file,1,function(X) makepreds(X["webpage"], rulesDF))
 ```
 
-
+```{r}
+head(nasa_aug_file)
+```
 
 
 
