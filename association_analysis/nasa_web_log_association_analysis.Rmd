@@ -5,41 +5,53 @@ output: html_notebook
 
 
 ```{r}
-setwd("/Users/pierlim/PycharmProjects/NASAWebLogAnalytics/association_analysis")
+setwd("H:\\EB5205BarryWebAnalyticsCA\\nasa_source_code")
 library("arules")
-nasa_july_df <- read.csv(file="nasa_data/sessionized_data/sessionize_date_july.csv", header=TRUE, sep=",")
-head(nasa_july_df)
-```
-
-```{r}
-nasa_july_df <- nasa_july_df[c("session_id", "webpage")]
-head(nasa_july_df)
-```
-
-```{r}
-nasa_july_df$webpage <- as.factor(nasa_july_df$webpage)
-nasa_july_df$session_id <- as.factor(nasa_july_df$session_id)
-# nasa <- as(nasa_july_df, "transactions")
-head(nasa_july_df)
+nasa_transactions = read.transactions(file="nasa_data/sessionized_data/sessionize_date_july.csv",rm.duplicates=TRUE, format="single", sep=",", cols=c("session_id","webpage"));
 ```
 ```{r}
-rules <- apriori(nasa_july_df, parameter = list(supp=0.4, conf=0.4, minlen=2))
+rules <- apriori(nasa_transactions, parameter = list(supp=0.01, conf=0.01, minlen=2))
 summary(rules)
 inspect(rules)
 ```
 ```{r}
 # a useful plot of training data
-nasa_transactions = as(nasa_july_df, "transactions")
 itemFrequencyPlot(nasa_transactions,topN=20,type="absolute")
 ```
+Interesting findings:
+1. Apollo 13 the movie on the eventful 1969 mission to the moon was released at end of June 1995 which spiked a lot of interest in the Apollo 13 mission. Incidentally, Apollo 13 had launched from the KSC and so many people were searching for the history of the Apollo 13 mission presumably since the internet was in its nascent state and Wikipedia (or other open internet based encyclopedias) were not yet launched then.
+References: 1. https://en.wikipedia.org/wiki/Apollo_13_(film)
+
+2. STS 71 mission is also a top web page visited since it was launched towards the end of June 1995 from the KSC.
+
+
+
+
+
+
 ```{r}
 #read the test data
-nasa_test_df = read.csv(file="nasa_data/sessionized_data/sessionize_date_aug.csv", header=TRUE, sep=",");
-head(nasa_test_df)
+setwd("H:\\EB5205BarryWebAnalyticsCA\\nasa_source_code")
+
+nasa_aug_file = read.csv(file="nasa_data/sessionized_data/sessionize_date_aug.csv")
+nasa_aug_file <- nasa_aug_file[c("session_id", "webpage")]
+head(nasa_aug_file)
+```
+```{r}
+# execute ruleset using item as rule antecedent (handles single item antecedents only)
+makepreds <- function(item, rulesDF) {
+  antecedent = paste("{",item,"} =>",sep="") 
+  firingrules = rulesDF[grep(antecedent, rulesDF$rules,fixed=TRUE),1]
+  gsub(" ","",toString(sub("\\}","",sub(".*=> \\{","",firingrules))))
+}
+
+rulesDF = as(rules,"data.frame")
+nasa_aug_file$preds = apply(nasa_aug_file,1,function(X) makepreds(X["webpage"], rulesDF))
 ```
 
-
-
+```{r}
+head(nasa_aug_file)
+```
 
 
 
