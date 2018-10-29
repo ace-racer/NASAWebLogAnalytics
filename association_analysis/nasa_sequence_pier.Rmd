@@ -9,8 +9,8 @@ Try executing this chunk by clicking the *Run* button within the chunk or by pla
 
 ```{r}
 library(arulesSequences)
-
-data <- read_baskets(con = "nasa_data/sessionized_data/sessionize_hostonly_july_pier.csv", info = c("sequenceID","eventID","SIZE"))
+setwd("C:\\Users\\pierl\\PycharmProjects\\NASA\\association_analysis")
+data <- read_baskets(con = "nasa_data/sessionized_data/sessionize_hostonly_july_pier_test.txt", info = c("sequenceID","eventID","SIZE"))
 
 ```
 
@@ -22,4 +22,7 @@ as(head(data), "data.frame") # view first few rows of the data
 When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
 
 The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+```{r}
+
+```
 
