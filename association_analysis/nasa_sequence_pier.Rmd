@@ -6,11 +6,49 @@ output: html_notebook
 This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
 
 Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+```{r}
+
+#######################################################################
+# the supporting functions
+#######################################################################
+
+#remove duplicate items from a basket (itemstrg)
+uniqueitems <- function(itemstrg) {
+  unique(as.list(strsplit(gsub(" ","",itemstrg),","))[[1]])
+}
+
+# execute ruleset using item as rule antecedent (handles single item antecedents only)
+makepreds <- function(item, rulesDF) {
+  antecedent = paste("{",item,"} =>",sep="") 
+  firingrules = rulesDF[grep(antecedent, rulesDF$rules,fixed=TRUE),1]
+  gsub(" ","",toString(sub("\\}","",sub(".*=> \\{","",firingrules))))
+}
+
+# count how many predictions are in the basket of items already seen by that user 
+# Caution : refers to "baskets" as a global
+checkpreds <- function(preds, baskID) {
+  plist = preds[[1]]
+  blist = baskets[baskets$session_id == baskID,"webpage"][[1]]
+  cnt = 0 
+  for (p in plist) {
+    if (p %in% blist) cnt = cnt+1
+  }
+  cnt
+}
+
+# count all predictions made
+countpreds <- function(predlist) {
+  len = length(predlist)
+  if (len > 0 && (predlist[[1]] == "")) 0 # avoid counting an empty list
+  else len
+}
+```
+
 
 ```{r}
 library(arulesSequences)
 setwd("C:\\Users\\pierl\\PycharmProjects\\NASA\\association_analysis")
-data <- read_baskets(con = "nasa_data/sessionized_data/sessionize_hostonly_july_pier_test.txt", info = c("sequenceID","eventID","SIZE"))
+data <- read_baskets(con = "nasa_data/sessionized_data/hostonly_july_ordered.txt", info = c("sequenceID","eventID","SIZE"))
 
 ```
 
@@ -19,10 +57,23 @@ data <- read_baskets(con = "nasa_data/sessionized_data/sessionize_hostonly_july_
 as(head(data), "data.frame") # view first few rows of the data
 ```
 
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
 
-The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
 ```{r}
+seqs <- cspade(data, parameter = list(support = 0.05), control = list(verbose = TRUE))
+as(seqs,"data.frame")  # view the sequences
 
+```
+
+```{r}
+rules <- ruleInduction(seqs, confidence = 0.1,control = list(verbose = TRUE))
+rulesDF <- as(rules,"data.frame")  # view the rules
+rulesDF
+```
+
+
+```{r}
+#read the test data
+testegs = read.csv(file="nasa_data/sessionized_data/hostonly_aug_ordered.txt"); # TODO change to csv version
+head(testegs)
 ```
 

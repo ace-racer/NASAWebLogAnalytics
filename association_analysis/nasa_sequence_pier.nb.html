@@ -177,14 +177,48 @@ $(document).ready(function () {
 <p>Try executing this chunk by clicking the <em>Run</em> button within the chunk or by placing your cursor inside it and pressing <em>Cmd+Shift+Enter</em>.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShhcnVsZXNTZXF1ZW5jZXMpXG5zZXR3ZChcIkM6XFxcXFVzZXJzXFxcXHBpZXJsXFxcXFB5Y2hhcm1Qcm9qZWN0c1xcXFxOQVNBXFxcXGFzc29jaWF0aW9uX2FuYWx5c2lzXCIpXG5kYXRhIDwtIHJlYWRfYmFza2V0cyhjb24gPSBcIm5hc2FfZGF0YS9zZXNzaW9uaXplZF9kYXRhL3Nlc3Npb25pemVfaG9zdG9ubHlfanVseV9waWVyX3Rlc3QudHh0XCIsIGluZm8gPSBjKFwic2VxdWVuY2VJRFwiLFwiZXZlbnRJRFwiLFwiU0laRVwiKSlcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyNcbiMgdGhlIHN1cHBvcnRpbmcgZnVuY3Rpb25zXG4jIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjI1xuI3JlbW92ZSBkdXBsaWNhdGUgaXRlbXMgZnJvbSBhIGJhc2tldCAoaXRlbXN0cmcpXG51bmlxdWVpdGVtcyA8LSBmdW5jdGlvbihpdGVtc3RyZykge1xuICB1bmlxdWUoYXMubGlzdChzdHJzcGxpdChnc3ViKFwiIFwiLFwiXCIsaXRlbXN0cmcpLFwiLFwiKSlbWzFdXSlcbn1cbiMgZXhlY3V0ZSBydWxlc2V0IHVzaW5nIGl0ZW0gYXMgcnVsZSBhbnRlY2VkZW50IChoYW5kbGVzIHNpbmdsZSBpdGVtIGFudGVjZWRlbnRzIG9ubHkpXG5tYWtlcHJlZHMgPC0gZnVuY3Rpb24oaXRlbSwgcnVsZXNERikge1xuICBhbnRlY2VkZW50ID0gcGFzdGUoXCJ7XCIsaXRlbSxcIn0gPT5cIixzZXA9XCJcIikgXG4gIGZpcmluZ3J1bGVzID0gcnVsZXNERltncmVwKGFudGVjZWRlbnQsIHJ1bGVzREYkcnVsZXMsZml4ZWQ9VFJVRSksMV1cbiAgZ3N1YihcIiBcIixcIlwiLHRvU3RyaW5nKHN1YihcIlxcXFx9XCIsXCJcIixzdWIoXCIuKj0+IFxcXFx7XCIsXCJcIixmaXJpbmdydWxlcykpKSlcbn1cbiMgY291bnQgaG93IG1hbnkgcHJlZGljdGlvbnMgYXJlIGluIHRoZSBiYXNrZXQgb2YgaXRlbXMgYWxyZWFkeSBzZWVuIGJ5IHRoYXQgdXNlciBcbiMgQ2F1dGlvbiA6IHJlZmVycyB0byBcImJhc2tldHNcIiBhcyBhIGdsb2JhbFxuY2hlY2twcmVkcyA8LSBmdW5jdGlvbihwcmVkcywgYmFza0lEKSB7XG4gIHBsaXN0ID0gcHJlZHNbWzFdXVxuICBibGlzdCA9IGJhc2tldHNbYmFza2V0cyRzZXNzaW9uX2lkID09IGJhc2tJRCxcIndlYnBhZ2VcIl1bWzFdXVxuICBjbnQgPSAwIFxuICBmb3IgKHAgaW4gcGxpc3QpIHtcbiAgICBpZiAocCAlaW4lIGJsaXN0KSBjbnQgPSBjbnQrMVxuICB9XG4gIGNudFxufVxuIyBjb3VudCBhbGwgcHJlZGljdGlvbnMgbWFkZVxuY291bnRwcmVkcyA8LSBmdW5jdGlvbihwcmVkbGlzdCkge1xuICBsZW4gPSBsZW5ndGgocHJlZGxpc3QpXG4gIGlmIChsZW4gPiAwICYmIChwcmVkbGlzdFtbMV1dID09IFwiXCIpKSAwICMgYXZvaWQgY291bnRpbmcgYW4gZW1wdHkgbGlzdFxuICBlbHNlIGxlblxufVxuYGBgIn0= -->
+<pre class="r"><code>#######################################################################
+# the supporting functions
+#######################################################################
+#remove duplicate items from a basket (itemstrg)
+uniqueitems &lt;- function(itemstrg) {
+  unique(as.list(strsplit(gsub(&quot; &quot;,&quot;&quot;,itemstrg),&quot;,&quot;))[[1]])
+}
+# execute ruleset using item as rule antecedent (handles single item antecedents only)
+makepreds &lt;- function(item, rulesDF) {
+  antecedent = paste(&quot;{&quot;,item,&quot;} =&gt;&quot;,sep=&quot;&quot;) 
+  firingrules = rulesDF[grep(antecedent, rulesDF$rules,fixed=TRUE),1]
+  gsub(&quot; &quot;,&quot;&quot;,toString(sub(&quot;\\}&quot;,&quot;&quot;,sub(&quot;.*=&gt; \\{&quot;,&quot;&quot;,firingrules))))
+}
+# count how many predictions are in the basket of items already seen by that user 
+# Caution : refers to &quot;baskets&quot; as a global
+checkpreds &lt;- function(preds, baskID) {
+  plist = preds[[1]]
+  blist = baskets[baskets$session_id == baskID,&quot;webpage&quot;][[1]]
+  cnt = 0 
+  for (p in plist) {
+    if (p %in% blist) cnt = cnt+1
+  }
+  cnt
+}
+# count all predictions made
+countpreds &lt;- function(predlist) {
+  len = length(predlist)
+  if (len &gt; 0 &amp;&amp; (predlist[[1]] == &quot;&quot;)) 0 # avoid counting an empty list
+  else len
+}</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShhcnVsZXNTZXF1ZW5jZXMpXG5zZXR3ZChcIkM6XFxcXFVzZXJzXFxcXHBpZXJsXFxcXFB5Y2hhcm1Qcm9qZWN0c1xcXFxOQVNBXFxcXGFzc29jaWF0aW9uX2FuYWx5c2lzXCIpXG5kYXRhIDwtIHJlYWRfYmFza2V0cyhjb24gPSBcIm5hc2FfZGF0YS9zZXNzaW9uaXplZF9kYXRhL2hvc3Rvbmx5X2p1bHlfb3JkZXJlZC50eHRcIiwgaW5mbyA9IGMoXCJzZXF1ZW5jZUlEXCIsXCJldmVudElEXCIsXCJTSVpFXCIpKVxuVmlldyhydWxlc0RGKVxuYGBgIn0= -->
 <pre class="r"><code>library(arulesSequences)
 setwd(&quot;C:\\Users\\pierl\\PycharmProjects\\NASA\\association_analysis&quot;)
-data &lt;- read_baskets(con = &quot;nasa_data/sessionized_data/sessionize_hostonly_july_pier_test.txt&quot;, info = c(&quot;sequenceID&quot;,&quot;eventID&quot;,&quot;SIZE&quot;))</code></pre>
+data &lt;- read_baskets(con = &quot;nasa_data/sessionized_data/hostonly_july_ordered.txt&quot;, info = c(&quot;sequenceID&quot;,&quot;eventID&quot;,&quot;SIZE&quot;))
+View(rulesDF)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiaW5jb21wbGV0ZSBmaW5hbCBsaW5lIGZvdW5kIG9uICduYXNhX2RhdGEvc2Vzc2lvbml6ZWRfZGF0YS9zZXNzaW9uaXplX2hvc3Rvbmx5X2p1bHlfcGllcl90ZXN0LnR4dCdcbiJ9 -->
-<pre><code>incomplete final line found on 'nasa_data/sessionized_data/sessionize_hostonly_july_pier_test.txt'</code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
@@ -192,24 +226,79 @@ data &lt;- read_baskets(con = &quot;nasa_data/sessionized_data/sessionize_hoston
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYXMoaGVhZChkYXRhKSwgXCJkYXRhLmZyYW1lXCIpICMgdmlldyBmaXJzdCBmZXcgcm93cyBvZiB0aGUgZGF0YVxuYGBgIn0= -->
 <pre class="r"><code>as(head(data), &quot;data.frame&quot;) # view first few rows of the data</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibmNvbCI6NCwibnJvdyI6Nn0sInJkZiI6Ikg0c0lBQUFBQUFBQUJvVlN6VTdDUUJCZTJsSkNEV3BDUEhueWJOb1MwZmdDZXVDcUYrSnRLWXMwYkhkaFp5c214T2pGdC9HTlBQc1dCcDMrTExTTmlVMm1NL1BOejg0M3UzYzM0d3R2N0JGQ0xHSTdOckZzTkIwTGZ5M2lrRzZtbndteCt4bUt1b2ZhellQb0ZGZ3U3YnhCdmREbDdJbHhRT3M0enlqUWcwMjRnQ2lZNjRTL2xOREpKb1I1cWpWbllTUlRvYWR5TFVJVFBOc0hreGdnbGdKMlJxMUw4RWNpYVBDSFY4YjNDN2RXZGI2dlVneGtxaUlHb1ZTVFdETUZPQTVQazBsTXk1STZ2M2JFS1JoNk85SXpHbW1wME5xaVZOZlZGTXZFQjlid0hlVmpZRjJ1VUY1UnZzTHYwODkvNmx2TmNRUk5tQm5ITVNEeVNLQjBQR0NybEltSWpXNUtwSU0zSlBUT2RlNUhEN2VOdGwwbDE0RnBuYzFqdlpIOGM0dEUrNmV4QVc5S05RMW1Da3VLTGRUYWRlUlNaMWVEZmZybHU2a1d0MVFET0VwRmR2alVqK2FwV1BqWDJRR1ZKZlJLN1Zac3B6alNNWU9abCtjeThSZ0xaamJENllUeDBqbEVram5IWUtsaW9RMFRSQ0hRVWxPVDUrR0RNRWh4dzl0ZkdzemtZa0VEQUFBPSJ9 -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibmNvbCI6NCwibnJvdyI6Nn0sInJkZiI6Ikg0c0lBQUFBQUFBQUJuMVN6VTdETUF6TzJxelRpZ1pJRXcvQUdiV1ZRSHVEY2RnVkxvaGJsbVdzV3BxTU9HVklFeEpQUG5EYlpHc3JSS1hVOXVlZitMUHpOSCs1ajE5aVFraEFRaHFTSUVTVkJ2Z2JFRXJHbGZ3a0pKeFdLTW9KeXFoMm90Rmc5Um5XQmJxSmtSUWZRZ0pxMTNWRWcxNGNzaTN3ZEdNTCtlV2dtME1HbTlKYUtUS3VTMlZYZXE4eTc3dzlPNHNjSU5jS1RrcW5TdnBISUZoSUhtYmVUaHF6azNWM3pqSUNkR200Z0V5YlpXNkZBV3hIbHNVeVp5Nmx5Mi9JSlFOUDcwUjZ6YmpWQnJVam52YTQraWZvK1lQV1NJY08reTkvMEc5SHNVTDRkcWdIa1VjQnpvaEJ2SmRDY2JHWU8yU0VHMUwyWk5MbnhldGpyK3pZNkgzcVMxZjlCTitrL3FJbU1QenBUU0JlTWN2U3RjR1VaZ3FkY2lPOXM5VnFzTTdVRVcwbkQwd1B1Q3BWZGZrcTRadFNiWk5aZFVGckNCTW5vNVpPbXl1cGI4eS92RWlvdDF3SlB4bkpsa0k2NHhKSjFoelRuY21WOVV3UWhkUnF5M3hjakEvQ0k4MkdqNysrS0VtalFRTUFBQT09In0= -->
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["items"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["sequenceID"],"name":[2],"type":["int"],"align":["right"]},{"label":["eventID"],"name":[3],"type":["int"],"align":["right"]},{"label":["SIZE"],"name":[4],"type":["int"],"align":["right"]}],"data":[{"1":"{/ksc.html}","2":"1","3":"805450629","4":"1","_rn_":"1"},{"1":"{/shuttle/missions/missions.html}","2":"1","3":"805450668","4":"1","_rn_":"2"},{"1":"{/shuttle/missions/sts-35/mission-sts-35.html}","2":"1","3":"805450865","4":"1","_rn_":"3"},{"1":"{/shuttle/missions/sts-35/mission-sts-35.html}","2":"1","3":"805450879","4":"1","_rn_":"4"},{"1":"{/shuttle/resources/orbiters/columbia.html}","2":"1","3":"805450981","4":"1","_rn_":"5"},{"1":"{/shuttle/countdown/}","2":"2","3":"805051355","4":"1","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10],"total":[4]},"rows":{"min":[10],"max":[10],"total":[6]},"pages":{}}}
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["items"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["sequenceID"],"name":[2],"type":["int"],"align":["right"]},{"label":["eventID"],"name":[3],"type":["int"],"align":["right"]},{"label":["SIZE"],"name":[4],"type":["int"],"align":["right"]}],"data":[{"1":"{/ksc.html}","2":"1","3":"1","4":"1","_rn_":"1"},{"1":"{/shuttle/missions/missions.html}","2":"1","3":"2","4":"1","_rn_":"2"},{"1":"{/shuttle/missions/sts-35/mission-sts-35.html}","2":"1","3":"3","4":"1","_rn_":"3"},{"1":"{/shuttle/missions/sts-35/mission-sts-35.html}","2":"1","3":"4","4":"1","_rn_":"4"},{"1":"{/shuttle/resources/orbiters/columbia.html}","2":"1","3":"5","4":"1","_rn_":"5"},{"1":"{/shuttle/countdown/}","2":"2","3":"1","4":"1","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10],"total":[4]},"rows":{"min":[10],"max":[10],"total":[6]},"pages":{}}}
   </script>
 </div>
 <!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the <em>Preview</em> button or press <em>Cmd+Shift+K</em> to preview the HTML file).</p>
-<p>The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike <em>Knit</em>, <em>Preview</em> does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2VxcyA8LSBjc3BhZGUoZGF0YSwgcGFyYW1ldGVyID0gbGlzdChzdXBwb3J0ID0gMC4wNSksIGNvbnRyb2wgPSBsaXN0KHZlcmJvc2UgPSBUUlVFKSlcbmBgYCJ9 -->
+<pre class="r"><code>seqs &lt;- cspade(data, parameter = list(support = 0.05), control = list(verbose = TRUE))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG5wYXJhbWV0ZXIgc3BlY2lmaWNhdGlvbjpcbnN1cHBvcnQgOiAwLjA1XG5tYXhzaXplIDogICAxMFxubWF4bGVuICA6ICAgMTBcblxuYWxnb3JpdGhtaWMgY29udHJvbDpcbmJmc3R5cGUgIDogRkFMU0VcbnZlcmJvc2UgIDogIFRSVUVcbnN1bW1hcnkgIDogRkFMU0VcbnRpZExpc3RzIDogRkFMU0VcblxucHJlcHJvY2Vzc2luZyAuLi4gMiBwYXJ0aXRpb24ocyksIDEwLjMxIE1CIFsxLjdzXVxubWluaW5nIHRyYW5zYWN0aW9ucyAuLi4gMCBNQiBbMC4wOHNdXG5yZWFkaW5nIHNlcXVlbmNlcyAuLi4gWzAuMDVzXVxuXG50b3RhbCBlbGFwc2VkIHRpbWU6IDEuOHNcbiJ9 -->
+<pre><code>
+parameter specification:
+support : 0.05
+maxsize :   10
+maxlen  :   10
+
+algorithmic control:
+bfstype  : FALSE
+verbose  :  TRUE
+summary  : FALSE
+tidLists : FALSE
+
+preprocessing ... 2 partition(s), 10.31 MB [1.7s]
+mining transactions ... 0 MB [0.08s]
+reading sequences ... [0.05s]
+
+total elapsed time: 1.8s</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYXMoc2VxcyxcImRhdGEuZnJhbWVcIikgICMgdmlldyB0aGUgc2VxdWVuY2VzXG5gYGAifQ== -->
+<pre class="r"><code>as(seqs,&quot;data.frame&quot;)  # view the sequences</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibmNvbCI6MiwibnJvdyI6MzJ9LCJyZGYiOiJINHNJQUFBQUFBQUFCcDFXYlVnVVFSamV1L1B5S3p2ckxGUHppNGdndkR0TjhEbzZtaCtWUlZDWmdRaFJzYTE3M3VMZXpyVTc1eVY5YUZCUTlrRVJKQ2o5Q1NyeTFFd2pqSXF5Q0NvdEZhc2ZFWDFSOUtNZi9Ra2lxT3pkMjkzTHZjN3o5T0RaZVdmMmVaNTVaMmR1WnFyWDFhNU1xMDJqS01wSW1aSk1sTkVFWVpJUkhnWXFpVXFWeTMwVVpiS0dDWlFwQThvaW1RRXdBK1lBa2dFeVVUYVIzeThBeVB3c3dDSkFObUF4SUJlUUI4Z0hGQUFLVmEvNWdJV0FUSURjdTBYcGk1b0xtQWZJQVN3QnBBTlN3b25wRTV6RHM0MHNMNmtPUldwcnFudS80MkFKWUkzYWtLYzJTTjRBSVR6cllIQkFJSFU0S1B5akxJK2krRGhKNHJBZ1JRSzdsL2o0Q04zc25tU2ZDeFVQelhBOFJ6aFdjdkJNdVl2VzA4dUE0ZVVrZ3NVbUIrM0hQSS9Wd2xaVy9pK3ljWUlINjRVbENRbjFtazFUYVJSYXljd2RDK003YXJTY1NUUzEvSi9RSURHUlBDS3hSbGdhUllnellSbnVHSHFiTzZZbXZwTnJCaUtlOHhEczhlaDdYVCt0UVdRMVNVU3lPY3NjbkkrdWg1V2lGSHF6eWhtYnFYV2JVdFc3WmNkMjAxNHZpL2s2RXYwL09RbCtrV3IzdFAra1dRNW82ZlRPR3JVMEZsWDJySERwdXFodzZYV09xWFRPMGtRbkxscW1HMUZwSXN0N3l1U25jSnMrK1lSWFhTTFRNZHZrNDA5dXZPUjl1RkhlWEpWQ0x5dWZKQ01zNHhVd2ordWJ3a0tCRFVvaTY1RmpLR3dFUjIwWUJiSVVlMGlRRmxsSGtCTWFCZVdwc2ZUSGpabmhhVWs3YlNKbkVHejlzTlZCOUVjOXRZclFNMHZmeUtxTlgxQm85TkR0bm9GV2RQWDd4N2N2c202aU8wUGYzcm0vN2tKM242KzhzT1AwRlhUcndJMzJpelVoOVBSYjAwaW1hejhhYi83WjBieTREZlduR0Q0VnY3V2d3YUVuUjV5SFBxUEhXMDRlUC94T1JKM2YyNHkvVG8yanJwZFYxb2RISjlBOWYzLzZuU05YMGVEWTlySGgxK3ZRZzIzdHYxdnpYNlB1M1hXbmVodmNxSGZuaGlybTR5N1VXMzk0d0gwaUExMnpEcFVOSDl1TE9pK1huRzF1T1lmNnF1NC9YV1VaUmlIbmdrdS9YbFdpL20xYmkvdk8vMEQ5NzF0R1RveWVSTmZ0dWI2dk5iV29aNkptVDU3VGlrS2JWNytwWGp1SVFrKzZpd3MyTGtSZFdUMlB0dWZub3E3eGp1NUM3Z1BxUEdQYXNjS2FIZjNaQk5ySGFwL05xRGFtU096ZUFDc3dyRnBQbGdKK1B4WkpsRFpWeEVHN3BwZXZHTVlXS3Z3clVvaW1pYWpwU0t1akNXMzNpQ0JScGtSbmw0ejlSRjVWNEdOVjd6R1R4UVl4cXNFU0VPVE82MnlNTnlBMDJDclV1NDVCeVNHY2tFRzl5Mml4VWVreVNVdk1ySzBUVnFqbkJHMjRacDdldy9KcVpSNE1NanhHdTEva0JLS05CRm9sTzhHRTFuaHBET2ExRm1XNS9ma0xtRkg3M3NVSkFBQT0ifQ== -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["sequence"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["support"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"<{/}>","2":"0.22704158"},{"1":"<{/facilities/lc39a.html}>","2":"0.05432507"},{"1":"<{/history/apollo/apollo-13/apollo-13-info.html}>","2":"0.05069646"},{"1":"<{/history/apollo/apollo-13/apollo-13.html}>","2":"0.11248683"},{"1":"<{/history/apollo/apollo.html}>","2":"0.11642758"},{"1":"<{/history/history.html}>","2":"0.09955910"},{"1":"<{/ksc.html}>","2":"0.21043322"},{"1":"<{/shuttle/countdown/}>","2":"0.30468598"},{"1":"<{/shuttle/countdown/countdown.html}>","2":"0.07434093"},{"1":"<{/shuttle/countdown/liftoff.html}>","2":"0.13903159"},{"1":"<{/shuttle/missions/missions.html}>","2":"0.18989712"},{"1":"<{/shuttle/missions/sts-69/mission-sts-69.html}>","2":"0.05264732"},{"1":"<{/shuttle/missions/sts-70/images/images.html}>","2":"0.05631495"},{"1":"<{/shuttle/missions/sts-70/mission-sts-70.html}>","2":"0.12281341"},{"1":"<{/shuttle/missions/sts-71/images/images.html}>","2":"0.13920067"},{"1":"<{/shuttle/missions/sts-71/mission-sts-71.html}>","2":"0.14311540"},{"1":"<{/shuttle/missions/sts-71/movies/movies.html}>","2":"0.05736841"},{"1":"<{/shuttle/technology/sts-newsref/stsref-toc.html}>","2":"0.06392332"},{"1":"<{/software/winvn/winvn.html}>","2":"0.06407939"},{"1":"<{/shuttle/countdown/},{/shuttle/missions/sts-71/mission-sts-71.html}>","2":"0.06069789"},{"1":"<{/shuttle/missions/missions.html},{/shuttle/missions/sts-71/mission-sts-71.html}>","2":"0.05204906"},{"1":"<{/shuttle/countdown/},{/shuttle/missions/sts-71/images/images.html}>","2":"0.07154469"},{"1":"<{/},{/shuttle/missions/missions.html}>","2":"0.05315455"},{"1":"<{/shuttle/countdown/},{/shuttle/countdown/liftoff.html}>","2":"0.07545943"},{"1":"<{/},{/shuttle/countdown/}>","2":"0.07764440"},{"1":"<{/ksc.html},{/shuttle/countdown/}>","2":"0.06710973"},{"1":"<{/shuttle/countdown/},{/shuttle/countdown/}>","2":"0.06054182"},{"1":"<{/shuttle/missions/sts-70/mission-sts-70.html},{/shuttle/countdown/}>","2":"0.05332362"},{"1":"<{/shuttle/missions/sts-71/mission-sts-71.html},{/shuttle/countdown/}>","2":"0.05427304"},{"1":"<{/ksc.html},{/ksc.html}>","2":"0.05484530"},{"1":"<{/history/apollo/apollo.html},{/history/apollo/apollo-13/apollo-13.html}>","2":"0.05630194"},{"1":"<{/},{/}>","2":"0.05187998"}],"options":{"columns":{"min":{},"max":[10],"total":[2]},"rows":{"min":[10],"max":[10],"total":[32]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucnVsZXMgPC0gcnVsZUluZHVjdGlvbihzZXFzLCBjb25maWRlbmNlID0gMC4xLGNvbnRyb2wgPSBsaXN0KHZlcmJvc2UgPSBUUlVFKSlcbnJ1bGVzREYgPC0gYXMocnVsZXMsXCJkYXRhLmZyYW1lXCIpICAjIHZpZXcgdGhlIHJ1bGVzXG5ydWxlc0RGXG5gYGAifQ== -->
+<pre class="r"><code>rules &lt;- ruleInduction(seqs, confidence = 0.1,control = list(verbose = TRUE))
+rulesDF &lt;- as(rules,&quot;data.frame&quot;)  # view the rules
+rulesDF</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibmNvbCI6NCwibnJvdyI6MTN9LCJyZGYiOiJINHNJQUFBQUFBQUFCZ3R5aVREaWl1QmlZR0JnWW1CbVlXWmdZZ1l5V1ppQUJDTURDd01uaUs1Z1lHQVdCb2tDYVY0Z0RjSWdEZHhBREZJQTBzRUJOb0NCZ1EySTJZR1lCNnFPRmFJUGFCaXFvV3c1cVdXcE9jVkFsZ0JZSlVTVXo2WmF2OVpPd2RaT0FjeUFpaW9naXhabmxKYVU1S1RxSitlWDVwV2s1SmZuSWRUcFlGT1htMWxjbkptZlZ3eG42R1dVNU9iQTlmZ0RsV1prRnBma0YxWHFKeGJrNStUa1F5bW9NcWhwV0pYb0dob2pXS2pHeWdIMVpCY25veHFDRUlDcTBzQ21DbzhIalhCSUU5WnBSNnJPbk15MGt2eTBORlQzZWhGbkNqeklpMHVLZGMwTjlUTnpFOU5UaTZFVXFvbmU1SmtJNWV0Q3VLaEdoaE1SK1JRWTc0MVRud0dxUGdPaW94VzNrVGljZ3M5STFHekdtcHlUV0F6TFpmQzhsNWFZREV6TlFOWS9VSjRENVQvNzljS25EYzkwRk5xdldxWXpzYjVoc3YybWdBT25MUGpQMks4MkYxcjY1NXFiL2VaQWY4Vk4wNzdiYjM3UWNMNzdRby85UmoycDNOZGhFZmJyL29jbFNac0wyNi8ydGI0VDVIelFmdlhKdFlweUhxTDJhMFRXSFEyV2xiSmZjM24yV3ZuTWgvYXJKakJIYXdtTHcrMDdXWCtYUTBYcXRQM0ZyaTBteVMzMTl1ZjQwbm1ZMGd2dHozNmZLbi9OeHR6Ky9PYnMzRk5jbXZaWEgvT0dORXN4MkYvSjVMdWZJWDNUL21TK2lQSTJNU2I3MnlkWFA1OTVzOWoraHFzTjY5Um9ML3NMNjdRMXAzU1cyZC83OUhWTEkzdVAvVm43aGFiMjd0SncrNzY1VHRvZDBuamYvdCtTbmplNS9aL3RmLzB0M3JLZ29OLys4ODdMM3dOMzdMSC8wNURZUHVNaGgvM0hyMmthTlZPdjJIL1liNzhrZG91QS9aTjd4YzZsbjgvWmZ6dnoyTnY0YTdiOTUxY0NLUlUxNit3L1h4VHNYR1IxelVIUVNPUDJGNmNXK3c5U3lkTTVWbkNnQjM5ZVltNHFMUGhab0lJc1JhVTVxVkEyZTNGcFFVRitVUW1VeTVXY241ZVdtWkthbHd4VHdBTEtpR2ltY2hibGwrdkJUQVlWc2t3TkRHREFDMUhJL0I4dHdybFNFa3NTOWRLS2dGb2drWTVpSEh0K1FRa295UUhORVlhVzJNaWFHWXZRQlBoTDgwQ1dwK2dtWjVUbVpldGFRbXNEUmlqbVJhSmhiQmFJbFN3d2g3SENVbUpxWG5wbUhzeXZyRG1KU2FrNXNLb0E2RW13SC9VS2lqTHo0QUVFRkMzV0s4a3ZTY3hCQkZrT1RBU1NvUDhCQUd0dC9rN1RCZ0FBIn0= -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["rule"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["support"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["confidence"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["lift"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"<{/shuttle/countdown/}> => <{/shuttle/missions/sts-71/mission-sts-71.html}>","2":"0.06069789","3":"0.1992146","4":"1.3919856","_rn_":"1"},{"1":"<{/shuttle/missions/missions.html}> => <{/shuttle/missions/sts-71/mission-sts-71.html}>","2":"0.05204906","3":"0.2740908","4":"1.9151735","_rn_":"2"},{"1":"<{/shuttle/countdown/}> => <{/shuttle/missions/sts-71/images/images.html}>","2":"0.07154469","3":"0.2348145","4":"1.6868779","_rn_":"3"},{"1":"<{/}> => <{/shuttle/missions/missions.html}>","2":"0.05315455","3":"0.2341181","4":"1.2328682","_rn_":"4"},{"1":"<{/shuttle/countdown/}> => <{/shuttle/countdown/liftoff.html}>","2":"0.07545943","3":"0.2476630","4":"1.7813430","_rn_":"5"},{"1":"<{/}> => <{/shuttle/countdown/}>","2":"0.07764440","3":"0.3419832","4":"1.1224119","_rn_":"6"},{"1":"<{/ksc.html}> => <{/shuttle/countdown/}>","2":"0.06710973","3":"0.3189122","4":"1.0466916","_rn_":"7"},{"1":"<{/shuttle/countdown/}> => <{/shuttle/countdown/}>","2":"0.06054182","3":"0.1987024","4":"0.6521546","_rn_":"8"},{"1":"<{/shuttle/missions/sts-70/mission-sts-70.html}> => <{/shuttle/countdown/}>","2":"0.05332362","3":"0.4341841","4":"1.4250215","_rn_":"9"},{"1":"<{/shuttle/missions/sts-71/mission-sts-71.html}> => <{/shuttle/countdown/}>","2":"0.05427304","3":"0.3792257","4":"1.2446445","_rn_":"10"},{"1":"<{/ksc.html}> => <{/ksc.html}>","2":"0.05484530","3":"0.2606304","4":"1.2385421","_rn_":"11"},{"1":"<{/history/apollo/apollo.html}> => <{/history/apollo/apollo-13/apollo-13.html}>","2":"0.05630194","3":"0.4835791","4":"4.2989840","_rn_":"12"},{"1":"<{/}> => <{/}>","2":"0.05187998","3":"0.2285043","4":"1.0064426","_rn_":"13"}],"options":{"columns":{"min":{},"max":[10],"total":[4]},"rows":{"min":[10],"max":[10],"total":[13]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI3JlYWQgdGhlIHRlc3QgZGF0YVxudGVzdGVncyA9IHJlYWQuY3N2KGZpbGU9XCJuYXNhX2RhdGEvc2Vzc2lvbml6ZWRfZGF0YS9ob3N0b25seV9hdWdfb3JkZXJlZC50eHRcIik7ICMgVE9ETyBjaGFuZ2UgdG8gY3N2IHZlcnNpb25cbmhlYWQodGVzdGVncylcbmBgYCJ9 -->
+<pre class="r"><code>#read the test data
+testegs = read.csv(file=&quot;nasa_data/sessionized_data/hostonly_aug_ordered.txt&quot;); # TODO change to csv version
+head(testegs)</code></pre>
+<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIlIgTm90ZWJvb2siDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KDQpUaGlzIGlzIGFuIFtSIE1hcmtkb3duXShodHRwOi8vcm1hcmtkb3duLnJzdHVkaW8uY29tKSBOb3RlYm9vay4gV2hlbiB5b3UgZXhlY3V0ZSBjb2RlIHdpdGhpbiB0aGUgbm90ZWJvb2ssIHRoZSByZXN1bHRzIGFwcGVhciBiZW5lYXRoIHRoZSBjb2RlLiANCg0KVHJ5IGV4ZWN1dGluZyB0aGlzIGNodW5rIGJ5IGNsaWNraW5nIHRoZSAqUnVuKiBidXR0b24gd2l0aGluIHRoZSBjaHVuayBvciBieSBwbGFjaW5nIHlvdXIgY3Vyc29yIGluc2lkZSBpdCBhbmQgcHJlc3NpbmcgKkNtZCtTaGlmdCtFbnRlciouIA0KDQpgYGB7cn0NCmxpYnJhcnkoYXJ1bGVzU2VxdWVuY2VzKQ0Kc2V0d2QoIkM6XFxVc2Vyc1xccGllcmxcXFB5Y2hhcm1Qcm9qZWN0c1xcTkFTQVxcYXNzb2NpYXRpb25fYW5hbHlzaXMiKQ0KZGF0YSA8LSByZWFkX2Jhc2tldHMoY29uID0gIm5hc2FfZGF0YS9zZXNzaW9uaXplZF9kYXRhL3Nlc3Npb25pemVfaG9zdG9ubHlfanVseV9waWVyX3Rlc3QudHh0IiwgaW5mbyA9IGMoInNlcXVlbmNlSUQiLCJldmVudElEIiwiU0laRSIpKQ0KDQpgYGANCg0KDQpgYGB7cn0NCmFzKGhlYWQoZGF0YSksICJkYXRhLmZyYW1lIikgIyB2aWV3IGZpcnN0IGZldyByb3dzIG9mIHRoZSBkYXRhDQpgYGANCg0KV2hlbiB5b3Ugc2F2ZSB0aGUgbm90ZWJvb2ssIGFuIEhUTUwgZmlsZSBjb250YWluaW5nIHRoZSBjb2RlIGFuZCBvdXRwdXQgd2lsbCBiZSBzYXZlZCBhbG9uZ3NpZGUgaXQgKGNsaWNrIHRoZSAqUHJldmlldyogYnV0dG9uIG9yIHByZXNzICpDbWQrU2hpZnQrSyogdG8gcHJldmlldyB0aGUgSFRNTCBmaWxlKS4gDQoNClRoZSBwcmV2aWV3IHNob3dzIHlvdSBhIHJlbmRlcmVkIEhUTUwgY29weSBvZiB0aGUgY29udGVudHMgb2YgdGhlIGVkaXRvci4gQ29uc2VxdWVudGx5LCB1bmxpa2UgKktuaXQqLCAqUHJldmlldyogZG9lcyBub3QgcnVuIGFueSBSIGNvZGUgY2h1bmtzLiBJbnN0ZWFkLCB0aGUgb3V0cHV0IG9mIHRoZSBjaHVuayB3aGVuIGl0IHdhcyBsYXN0IHJ1biBpbiB0aGUgZWRpdG9yIGlzIGRpc3BsYXllZC4NCmBgYHtyfQ0KDQpgYGANCg0K</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIlIgTm90ZWJvb2siDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KDQpUaGlzIGlzIGFuIFtSIE1hcmtkb3duXShodHRwOi8vcm1hcmtkb3duLnJzdHVkaW8uY29tKSBOb3RlYm9vay4gV2hlbiB5b3UgZXhlY3V0ZSBjb2RlIHdpdGhpbiB0aGUgbm90ZWJvb2ssIHRoZSByZXN1bHRzIGFwcGVhciBiZW5lYXRoIHRoZSBjb2RlLiANCg0KVHJ5IGV4ZWN1dGluZyB0aGlzIGNodW5rIGJ5IGNsaWNraW5nIHRoZSAqUnVuKiBidXR0b24gd2l0aGluIHRoZSBjaHVuayBvciBieSBwbGFjaW5nIHlvdXIgY3Vyc29yIGluc2lkZSBpdCBhbmQgcHJlc3NpbmcgKkNtZCtTaGlmdCtFbnRlciouIA0KYGBge3J9DQoNCiMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjDQojIHRoZSBzdXBwb3J0aW5nIGZ1bmN0aW9ucw0KIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMNCg0KI3JlbW92ZSBkdXBsaWNhdGUgaXRlbXMgZnJvbSBhIGJhc2tldCAoaXRlbXN0cmcpDQp1bmlxdWVpdGVtcyA8LSBmdW5jdGlvbihpdGVtc3RyZykgew0KICB1bmlxdWUoYXMubGlzdChzdHJzcGxpdChnc3ViKCIgIiwiIixpdGVtc3RyZyksIiwiKSlbWzFdXSkNCn0NCg0KIyBleGVjdXRlIHJ1bGVzZXQgdXNpbmcgaXRlbSBhcyBydWxlIGFudGVjZWRlbnQgKGhhbmRsZXMgc2luZ2xlIGl0ZW0gYW50ZWNlZGVudHMgb25seSkNCm1ha2VwcmVkcyA8LSBmdW5jdGlvbihpdGVtLCBydWxlc0RGKSB7DQogIGFudGVjZWRlbnQgPSBwYXN0ZSgieyIsaXRlbSwifSA9PiIsc2VwPSIiKSANCiAgZmlyaW5ncnVsZXMgPSBydWxlc0RGW2dyZXAoYW50ZWNlZGVudCwgcnVsZXNERiRydWxlcyxmaXhlZD1UUlVFKSwxXQ0KICBnc3ViKCIgIiwiIix0b1N0cmluZyhzdWIoIlxcfSIsIiIsc3ViKCIuKj0+IFxceyIsIiIsZmlyaW5ncnVsZXMpKSkpDQp9DQoNCiMgY291bnQgaG93IG1hbnkgcHJlZGljdGlvbnMgYXJlIGluIHRoZSBiYXNrZXQgb2YgaXRlbXMgYWxyZWFkeSBzZWVuIGJ5IHRoYXQgdXNlciANCiMgQ2F1dGlvbiA6IHJlZmVycyB0byAiYmFza2V0cyIgYXMgYSBnbG9iYWwNCmNoZWNrcHJlZHMgPC0gZnVuY3Rpb24ocHJlZHMsIGJhc2tJRCkgew0KICBwbGlzdCA9IHByZWRzW1sxXV0NCiAgYmxpc3QgPSBiYXNrZXRzW2Jhc2tldHMkc2Vzc2lvbl9pZCA9PSBiYXNrSUQsIndlYnBhZ2UiXVtbMV1dDQogIGNudCA9IDAgDQogIGZvciAocCBpbiBwbGlzdCkgew0KICAgIGlmIChwICVpbiUgYmxpc3QpIGNudCA9IGNudCsxDQogIH0NCiAgY250DQp9DQoNCiMgY291bnQgYWxsIHByZWRpY3Rpb25zIG1hZGUNCmNvdW50cHJlZHMgPC0gZnVuY3Rpb24ocHJlZGxpc3QpIHsNCiAgbGVuID0gbGVuZ3RoKHByZWRsaXN0KQ0KICBpZiAobGVuID4gMCAmJiAocHJlZGxpc3RbWzFdXSA9PSAiIikpIDAgIyBhdm9pZCBjb3VudGluZyBhbiBlbXB0eSBsaXN0DQogIGVsc2UgbGVuDQp9DQpgYGANCg0KDQpgYGB7cn0NCmxpYnJhcnkoYXJ1bGVzU2VxdWVuY2VzKQ0Kc2V0d2QoIkM6XFxVc2Vyc1xccGllcmxcXFB5Y2hhcm1Qcm9qZWN0c1xcTkFTQVxcYXNzb2NpYXRpb25fYW5hbHlzaXMiKQ0KZGF0YSA8LSByZWFkX2Jhc2tldHMoY29uID0gIm5hc2FfZGF0YS9zZXNzaW9uaXplZF9kYXRhL2hvc3Rvbmx5X2p1bHlfb3JkZXJlZC50eHQiLCBpbmZvID0gYygic2VxdWVuY2VJRCIsImV2ZW50SUQiLCJTSVpFIikpDQoNCmBgYA0KDQoNCmBgYHtyfQ0KYXMoaGVhZChkYXRhKSwgImRhdGEuZnJhbWUiKSAjIHZpZXcgZmlyc3QgZmV3IHJvd3Mgb2YgdGhlIGRhdGENCmBgYA0KDQoNCmBgYHtyfQ0Kc2VxcyA8LSBjc3BhZGUoZGF0YSwgcGFyYW1ldGVyID0gbGlzdChzdXBwb3J0ID0gMC4wNSksIGNvbnRyb2wgPSBsaXN0KHZlcmJvc2UgPSBUUlVFKSkNCmFzKHNlcXMsImRhdGEuZnJhbWUiKSAgIyB2aWV3IHRoZSBzZXF1ZW5jZXMNCg0KYGBgDQoNCmBgYHtyfQ0KcnVsZXMgPC0gcnVsZUluZHVjdGlvbihzZXFzLCBjb25maWRlbmNlID0gMC4xLGNvbnRyb2wgPSBsaXN0KHZlcmJvc2UgPSBUUlVFKSkNCnJ1bGVzREYgPC0gYXMocnVsZXMsImRhdGEuZnJhbWUiKSAgIyB2aWV3IHRoZSBydWxlcw0KcnVsZXNERg0KYGBgDQoNCg0KYGBge3J9DQojcmVhZCB0aGUgdGVzdCBkYXRhDQp0ZXN0ZWdzID0gcmVhZC5jc3YoZmlsZT0ibmFzYV9kYXRhL3Nlc3Npb25pemVkX2RhdGEvaG9zdG9ubHlfYXVnX29yZGVyZWQudHh0Iik7ICMgVE9ETyBjaGFuZ2UgdG8gY3N2IHZlcnNpb24NCmhlYWQodGVzdGVncykNCmBgYA0KDQo=</div>
 
 
 
