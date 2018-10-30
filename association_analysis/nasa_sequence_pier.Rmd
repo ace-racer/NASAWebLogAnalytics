@@ -70,7 +70,11 @@ rulesDF
 
 ```{r}
 #read the test data
-testegs = read.csv(file="nasa_data/sessionized_data/hostonly_aug_ordered.txt"); # TODO change to csv version
+testegs = read.csv(file="nasa_data/sessionized_data/hostonly_aug_ordered.csv"); 
 head(testegs)
+```
+```{r}
+#execute rules against test data
+testegs$preds = apply(testegs,1,function(X) makepreds(X["webpage"], rulesDF))
 ```
 

@@ -21,5 +21,6 @@ for idx, row in df.iterrows():
     processed_df = processed_df.append(row)
     count = count + 1
 
-processed_df.to_csv('hostonly_aug_ordered.csv', index=False)
-processed_df.to_csv(r'hostonly_aug_ordered.txt', header=None, index=None, sep=' ', mode='a')
+processed_df.to_csv('hostonly_aug_ordered.csv', index=False)  # Test portion needs csv
+processed_df.to_csv(r'hostonly_aug_ordered.txt', header=None, index=None, sep=' ',
+                    mode='a')  # CSpade requires this format
