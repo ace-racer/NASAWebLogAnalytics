@@ -18,7 +18,8 @@ uniqueitems <- function(itemstrg) {
 makepreds <- function(item, rulesDF) {
   antecedent = paste("<{",item,"}> =>",sep="") # NOTE: diff from assoc analysis same fn 
   firingrules = rulesDF[grep(antecedent, rulesDF$rule,fixed=TRUE),1] # rules is now rule
-  gsub(" ","",toString(sub("\\}","",sub(".*=> \\{","",firingrules))))
+  #gsub(" ","",toString(sub(">}","",sub(".*=> <{","",firingrules))))
+  gsub(" ", "", toString(sub('\\}>', '', sub(".*=> <\\{", "", firingrules))))
 }
 
 # count how many predictions are in the basket of items already seen by that user 
@@ -44,7 +45,7 @@ countpreds <- function(predlist) {
 
 ```{r}
 library(arulesSequences)
-setwd("C:\\Users\\pierl\\PycharmProjects\\NASA\\association_analysis")
+setwd("X:\\NASAWebLogAnalytics\\association_analysis")
 data <- read_baskets(con = "nasa_data/sessionized_data/hostonly_july_ordered.txt", info = c("sequenceID","eventID","SIZE"))
 
 ```
@@ -78,17 +79,14 @@ head(testegs)
 testegs$preds = apply(testegs,1,function(X) makepreds(X["webpage"], rulesDF)) # something wrong here getting preds like rules
 ```
 
-```{r}
-# Testing why it doesn't work... 
-#antecedent = paste("<{",'/shuttle/countdown/',"}> =>",sep="") # NOTE: rules here has '<' and '>' surrounding
-#firingrules = rulesDF[grep(antecedent, rulesDF$rule,fixed=TRUE),1]
-#firingrules
-```
+
 ```{r}
 # extract unique items bought (or rated highly) for each test user
 baskets = as.data.frame(aggregate(webpage ~ sequenceID, data = testegs, paste, collapse=","))
 baskets$webpage = apply(baskets,1,function(X) uniqueitems(X["webpage"]))
+```
 
+```{r}
 # extract unique predictions for each test user
 userpreds = as.data.frame(aggregate(preds ~ sequenceID, data = testegs, paste, collapse=","))
 userpreds$preds = apply(userpreds,1,function(X) uniqueitems(X["preds"])) 
@@ -96,8 +94,19 @@ userpreds$preds = apply(userpreds,1,function(X) uniqueitems(X["preds"]))
 
 ```{r}
 #count how many unique predictions made are correct, i.e. have previously been bought (or rated highly) by the user
-correctpreds = sum(apply(userpreds,1,function(X) checkpreds(X["preds"],X["sequenceID"])))# 0??
+correctpreds = sum(apply(userpreds,1,function(X) checkpreds(X["preds"],X["sequenceID"])))
 # count total number of unique predictions made
 totalpreds = sum(apply(userpreds,1,function(X) countpreds(X["preds"][[1]]))) 
 ```
 
+```{r}
+
+precision = correctpreds*100/totalpreds
+
+# Recall calculation
+uniquepages <- testegs[c('sequenceID', 'webpage')]
+actual_pages_visited <- table(uniquepages$sequenceID)
+recall <- correctpreds*100/sum(actual_pages_visited) 
+
+cat("precision=", precision, "corr=",correctpreds, "recall=",recall, "total=",totalpreds)
+```
