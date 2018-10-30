@@ -111,7 +111,7 @@ cat("precision=", precision, "corr=",correctpreds,"total=",totalpreds)
 
 ```
 
-## precision= 11.11818 corr= 137804 total= 1239448
+## precision= 10.41 corr= 107453 total= 1031812
 
 ```{r}
 library(arulesViz)
@@ -134,7 +134,7 @@ recall = correctpreds * 100 / total_relevant_instances
 recall
 ```
 
-## Recall comes to 33.11 % 
+## Recall comes to 25.82 % 
 
 ```{r}
 library(arulesViz)
