@@ -1,28 +1,103 @@
 ---
-title: "R Notebook"
+title: "Sequence Mining Code - Host-based"
 output: html_notebook
 ---
 
-This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+```{r}
 
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+#######################################################################
+# the supporting functions
+#######################################################################
+
+#remove duplicate items from a basket (itemstrg)
+uniqueitems <- function(itemstrg) {
+  unique(as.list(strsplit(gsub(" ","",itemstrg),","))[[1]])
+}
+
+# execute ruleset using item as rule antecedent (handles single item antecedents only)
+makepreds <- function(item, rulesDF) {
+  antecedent = paste("<{",item,"}> =>",sep="") # NOTE: diff from assoc analysis same fn 
+  firingrules = rulesDF[grep(antecedent, rulesDF$rule,fixed=TRUE),1] # rules is now rule
+  gsub(" ","",toString(sub("\\}","",sub(".*=> \\{","",firingrules))))
+}
+
+# count how many predictions are in the basket of items already seen by that user 
+# Caution : refers to "baskets" as a global
+checkpreds <- function(preds, baskID) {
+  plist = preds[[1]]
+  blist = baskets[baskets$sequenceID == baskID,"webpage"][[1]]
+  cnt = 0 
+  for (p in plist) {
+    if (p %in% blist) cnt = cnt+1
+  }
+  cnt
+}
+
+# count all predictions made
+countpreds <- function(predlist) {
+  len = length(predlist)
+  if (len > 0 && (predlist[[1]] == "")) 0 # avoid counting an empty list
+  else len
+}
+```
+
 
 ```{r}
-library()
 library(arulesSequences)
-
-data <- read_baskets(con = "nasa_data/sessionized_data/msnbc-seqformat-sample.txt", info = c("sequenceID","eventID","SIZE"))
+setwd("C:\\Users\\pierl\\PycharmProjects\\NASA\\association_analysis")
+data <- read_baskets(con = "nasa_data/sessionized_data/hostonly_july_ordered.txt", info = c("sequenceID","eventID","SIZE"))
 
 ```
 
 
 ```{r}
-as(data, "data.frame") # view first few rows of the data
+as(head(data), "data.frame") # view first few rows of the data
 ```
 
 
 ```{r}
-seqs <- cspade(data, parameter = list(support = 0.1), control = list(verbose = TRUE))
+seqs <- cspade(data, parameter = list(support = 0.05), control = list(verbose = TRUE))
 as(seqs,"data.frame")  # view the sequences
+
+```
+
+```{r}
+rules <- ruleInduction(seqs, confidence = 0.1,control = list(verbose = TRUE))
+rulesDF <- as(rules,"data.frame")  # view the rules
+rulesDF
+```
+
+
+```{r}
+#read the test data
+testegs = read.csv(file="nasa_data/sessionized_data/hostonly_aug_ordered.csv"); 
+head(testegs)
+```
+```{r}
+#execute rules against test data
+testegs$preds = apply(testegs,1,function(X) makepreds(X["webpage"], rulesDF)) # something wrong here getting preds like rules
+```
+
+```{r}
+# Testing why it doesn't work... 
+#antecedent = paste("<{",'/shuttle/countdown/',"}> =>",sep="") # NOTE: rules here has '<' and '>' surrounding
+#firingrules = rulesDF[grep(antecedent, rulesDF$rule,fixed=TRUE),1]
+#firingrules
+```
+```{r}
+# extract unique items bought (or rated highly) for each test user
+baskets = as.data.frame(aggregate(webpage ~ sequenceID, data = testegs, paste, collapse=","))
+baskets$webpage = apply(baskets,1,function(X) uniqueitems(X["webpage"]))
+
+# extract unique predictions for each test user
+userpreds = as.data.frame(aggregate(preds ~ sequenceID, data = testegs, paste, collapse=","))
+userpreds$preds = apply(userpreds,1,function(X) uniqueitems(X["preds"])) 
+```
+
+```{r}
+#count how many unique predictions made are correct, i.e. have previously been bought (or rated highly) by the user
+correctpreds = sum(apply(userpreds,1,function(X) checkpreds(X["preds"],X["sequenceID"])))# 0??
+# count total number of unique predictions made
+totalpreds = sum(apply(userpreds,1,function(X) countpreds(X["preds"][[1]]))) 
 ```
 

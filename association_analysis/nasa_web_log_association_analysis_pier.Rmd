@@ -43,7 +43,8 @@ countpreds <- function(predlist) {
 
 
 ```{r}
-setwd("/Users/pierlim/PycharmProjects/NASAWebLogAnalytics/association_analysis")
+#setwd("/Users/pierlim/PycharmProjects/NASAWebLogAnalytics/association_analysis")
+setwd("C:\\Users\\pierl\\PycharmProjects\\NASA\\association_analysis")
 library("arules")
 nasa_transactions = read.transactions(file="nasa_data/sessionized_data/sessionize_hostonly_july.csv",rm.duplicates=TRUE, format="single", sep=",", cols=c("session_id","webpage"));
 print(nasa_transactions)
