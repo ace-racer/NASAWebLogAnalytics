@@ -7,7 +7,7 @@ output: html_notebook
 ```{r}
 setwd("H:\\EB5205BarryWebAnalyticsCA\\nasa_source_code")
 library("arules")
-nasa_transactions = read.transactions(file="nasa_data/sessionized_data/sessionize_date_july.csv",rm.duplicates=TRUE, format="single", sep=",", cols=c("session_id","webpage"));
+nasa_transactions = read.transactions(file="nasa_data/sessionized_data/sessionize_time_july.csv",rm.duplicates=TRUE, format="single", sep=",", cols=c("session_id","webpage"));
 ```
 ```{r}
 rules <- apriori(nasa_transactions, parameter = list(supp=0.01, conf=0.01, minlen=2))
@@ -33,7 +33,7 @@ References: 1. https://en.wikipedia.org/wiki/Apollo_13_(film)
 #read the test data
 setwd("H:\\EB5205BarryWebAnalyticsCA\\nasa_source_code")
 
-nasa_aug_file = read.csv(file="nasa_data/sessionized_data/sessionize_date_aug.csv")
+nasa_aug_file = read.csv(file="nasa_data/sessionized_data/sessionize_time_aug.csv")
 nasa_aug_file <- nasa_aug_file[c("session_id", "webpage")]
 head(nasa_aug_file)
 ```
@@ -58,6 +58,10 @@ top.lift <- sort(rules, decreasing = TRUE, na.last = NA, by = "lift")
 inspect(head(top.lift, 20)) 
 ```
 ```{r}
+#remove duplicate items from a basket (itemstrg)
+uniqueitems <- function(itemstrg) {
+  unique(as.list(strsplit(gsub(" ","",itemstrg),","))[[1]])
+}
 
 # extract unique predictions for each test session - predictions
 userpreds = as.data.frame(aggregate(preds ~ session_id, data = nasa_aug_file, paste, collapse=","))
@@ -71,10 +75,7 @@ baskets
 
 ```
 ```{r}
-#remove duplicate items from a basket (itemstrg)
-uniqueitems <- function(itemstrg) {
-  unique(as.list(strsplit(gsub(" ","",itemstrg),","))[[1]])
-}
+
 
 # count how many predictions are in the basket of items already seen by that user 
 # Caution : refers to "baskets" as a global
@@ -110,7 +111,7 @@ cat("precision=", precision, "corr=",correctpreds,"total=",totalpreds)
 
 ```
 
-## precision= 11.11818 corr= 137804 total= 1239448
+## precision= 10.41 corr= 107453 total= 1031812
 
 ```{r}
 library(arulesViz)
@@ -133,7 +134,7 @@ recall = correctpreds * 100 / total_relevant_instances
 recall
 ```
 
-## Recall comes to 33.11 % 
+## Recall comes to 25.82 % 
 
 ```{r}
 library(arulesViz)
