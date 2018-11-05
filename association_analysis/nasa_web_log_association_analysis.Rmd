@@ -114,8 +114,8 @@ cat("precision=", precision, "corr=",correctpreds,"total=",totalpreds)
 
 ```{r}
 library(arulesViz)
-#plot(rules)
-plotly_arules(rules)
+plot(rules)
+#plotly_arules(rules)
 
 ```
 
