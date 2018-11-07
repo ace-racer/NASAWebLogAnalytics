@@ -1,4 +1,4 @@
-# Analysis of NASA Kennedy Space Centre July and August 1995 web logs
+# Analysis of NASA Kennedy Space Center July and August 1995 web logs
 
 Details of the data can be obtained from [here](http://ita.ee.lbl.gov/html/contrib/NASA-HTTP.html)
 
